@@ -1025,7 +1025,7 @@ static long anon_ksu_ioctl(struct file *filp, unsigned int cmd,
 // File release handler
 static int anon_ksu_release(struct inode *inode, struct file *filp)
 {
-	pr_info("ksu fd released\n");
+	pr_info("ksu fd released for pid %i\n", current->pid);
 	return 0;
 }
 
