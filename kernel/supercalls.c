@@ -1043,16 +1043,25 @@ int ksu_install_fd(void)
 	struct file *filp;
 	int fd;
 
+	int fd_get_flags = O_CLOEXEC;
+#ifdef CONFIG_KSU_GRAPHENEOS_COMPAT
+	fd_get_flags = 0;
+#endif
+
 	// Get unused fd
-	fd = get_unused_fd_flags(O_CLOEXEC);
+	fd = get_unused_fd_flags(fd_get_flags);
 	if (fd < 0) {
 		pr_err("ksu_install_fd: failed to get unused fd\n");
 		return fd;
 	}
 
     // Create anonymous inode file
+	int inode_filp_flags = O_RDWR | O_CLOEXEC;
+#ifdef CONFIG_KSU_GRAPHENEOS_COMPAT
+	inode_filp_flags = O_RDWR;
+#endif
     filp = anon_inode_getfile("[ksu_driver]", &anon_ksu_fops, NULL,
-                              O_RDWR | O_CLOEXEC);
+                              inode_filp_flags);
     if (IS_ERR(filp)) {
         pr_err("ksu_install_fd: failed to create anon inode file\n");
         put_unused_fd(fd);

@@ -17,4 +17,11 @@ config KSU_DEBUG
 	help
 	  Enable KernelSU debug mode.
 
+config KSU_GRAPHENEOS_COMPAT
+	bool "KernelSU GrapheneOS compat"
+	depends on KSU
+	default n
+	help
+	  Enable KernelSU compatibility mode with GrapheneOS.
+
 endmenu
