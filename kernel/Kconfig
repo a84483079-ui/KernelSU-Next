@@ -24,4 +24,11 @@ config KSU_GRAPHENEOS_COMPAT
 	help
 	  Enable KernelSU compatibility mode with GrapheneOS.
 
+config KSU_DISABLE_INSTALLATION
+	bool "Disable KernelSU hooks and etc"
+	depends on KSU
+	default n
+	help
+	  Disable KernelSU installation (skip kprobe installation).
+
 endmenu
