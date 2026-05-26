@@ -18,7 +18,6 @@ struct cred *ksu_cred;
 
 int __init kernelsu_init(void)
 {
-#ifndef CONFIG_KSU_DISABLE_INSTALLATION
 #ifdef CONFIG_KSU_DEBUG
 	pr_alert("*************************************************************");
 	pr_alert("**     NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE    **");
@@ -36,24 +35,21 @@ int __init kernelsu_init(void)
 
 	ksu_feature_init();
 
+#ifndef CONFIG_KSU_DISABLE_INSTALLATION
 	ksu_supercalls_init();
-
 	ksu_syscall_hook_manager_init();
+	ksu_throne_tracker_init();
+	ksu_ksud_init();
+	ksu_file_wrapper_init();
+#endif // CONFIG_KSU_DISABLE_INSTALLATION
 
 	ksu_allowlist_init();
-
-	ksu_throne_tracker_init();
-
-	ksu_ksud_init();
-
-    ksu_file_wrapper_init();
 
 #ifdef MODULE
 #ifndef CONFIG_KSU_DEBUG
 	kobject_del(&THIS_MODULE->mkobj.kobj);
 #endif
 #endif
-#endif // CONFIG_KSU_DISABLE_INSTALLATION
 	return 0;
 }
 
@@ -61,8 +57,6 @@ extern void ksu_observer_exit(void);
 void kernelsu_exit(void)
 {
 #ifndef CONFIG_KSU_DISABLE_INSTALLATION
-	ksu_allowlist_exit();
-
 	ksu_throne_tracker_exit();
 
 	ksu_observer_exit();
@@ -79,6 +73,7 @@ void kernelsu_exit(void)
 		put_cred(ksu_cred);
 	}
 #endif // CONFIG_KSU_DISABLE_INSTALLATION
+ksu_allowlist_exit();
 }
 
 module_init(kernelsu_init);
